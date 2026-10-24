@@ -61,6 +61,7 @@ installed package carries are copied: `package.json`, the file manifest, and the
 
 ## Maintainer setup
 
+- The release job runs only in `runtimeconditions/ts-rc-profiler`, so a fork or a personal copy never tries to publish.
 - Merge with "Squash and merge", using the PR title as the commit message, and
   require the `PR title` and `verify` checks on `main`.
 - Publishing uses npm trusted publishing, so there is no token. A package must exist

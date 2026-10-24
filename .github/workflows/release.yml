@@ -28,7 +28,7 @@ jobs:
       - run: npm pack --dry-run
 
   release:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.repository == 'runtimeconditions/ts-rc-profiler'
     needs: verify
     runs-on: ubuntu-latest
     permissions:

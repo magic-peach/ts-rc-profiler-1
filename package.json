@@ -2,6 +2,12 @@
   "name": "@runtimeconditions/typescript-profiler",
   "version": "0.1.0",
   "description": "Turns declarations in a TypeScript codebase into a validated Runtime Conditions Profile",
+  "keywords": [
+    "runtime-conditions",
+    "profiler",
+    "typescript",
+    "static-analysis"
+  ],
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -10,6 +16,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/runtimeconditions/ts-rc-profiler.git"
+  },
+  "homepage": "https://github.com/runtimeconditions/ts-rc-profiler#readme",
+  "bugs": {
+    "url": "https://github.com/runtimeconditions/ts-rc-profiler/issues"
   },
   "bin": {
     "runtimeconditions-typescript-profiler": "dist/src/main.js"
