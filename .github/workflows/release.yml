@@ -1,0 +1,65 @@
+name: Build and release
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20.19.6, 24]
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm pack --dry-run
+
+  release:
+    if: github.event_name == 'push'
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    concurrency:
+      group: release
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: Publish the package and tag the release
+        run: |
+          version=$(scripts/next-version.sh)
+          if [ -z "$version" ]; then
+            echo "Nothing to release since the last tag"
+            exit 0
+          fi
+          name=$(npm pkg get name | tr -d '"')
+          if ! npm view "$name@$version" version >/dev/null 2>&1; then
+            npm ci
+            npm run build
+            npm pkg set version="$version"
+            npm publish
+          fi
+          git tag "v$version"
+          git push origin "v$version"
+          gh release create "v$version" --generate-notes --verify-tag

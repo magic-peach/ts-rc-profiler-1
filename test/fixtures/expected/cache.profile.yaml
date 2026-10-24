@@ -1,0 +1,22 @@
+apiVersion: runtimeconditions.io/v1alpha1
+kind: RuntimeConditionsProfile
+metadata:
+  name: cache
+workload:
+  uri: https://services.example.com/cache
+  version: 1.0.0
+extensions:
+  - https://runtimeconditions.io/extensions/common-integrations/v1alpha1/runtimeconditions.extension.yaml
+  - https://runtimeconditions.io/extensions/env-configuration/v1alpha1/runtimeconditions.extension.yaml
+conditions:
+  - kind: cache
+    interface:
+      type: key_value
+      engine: redis
+    configuration:
+      env:
+        - name: REDIS_URL
+          property: scheme
+          sensitive: true
+        - name: REDIS_PORT
+          property: port
